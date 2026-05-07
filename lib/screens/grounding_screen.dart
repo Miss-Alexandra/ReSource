@@ -96,14 +96,13 @@ class _GroundingScreenState extends State<GroundingScreen> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Здесь можно сохранить записи или просто закрыть
-                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Запись сохранена'),
                         backgroundColor: AppColors.primaryBlue,
                       ),
                     );
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,

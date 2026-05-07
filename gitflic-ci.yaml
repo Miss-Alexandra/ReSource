@@ -1,0 +1,40 @@
+# Данный файл - шаблонная конфигурация CI/CD конвейера. Он может быть изменен по Вашему усмотрению. 
+# Некоторые шаблоны требуют предварительной настройки перед запуском.
+#
+# Подробнее о синтаксисе можно узнать в документации:
+# https://docs.gitflic.ru/cicd/gitflic-ci-yaml
+
+variables:
+  PATH: "$PATH:$HOME/.pub-cache/bin"
+
+before_script:
+    - flutter pub global activate dart_code_metrics
+    - flutter pub global activate junitreport
+
+code_quality:
+  stage: test
+  image: "ghcr.io/cirruslabs/flutter:3.10.3"
+  script:
+    - metrics lib -r codeclimate  > gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+
+test:
+  stage: test
+  image: "ghcr.io/cirruslabs/flutter:3.10.3"
+  script:
+    - flutter test --machine --coverage | tojunit -o report.xml
+    - lcov --summary coverage/lcov.info
+    - genhtml coverage/lcov.info --output=coverage
+  artifacts:
+    name: coverage
+    paths:
+      - $CI_PROJECT_DIR/coverage
+    reports:
+      junit: report.xml
+
+deploy:
+  stage: deploy
+  script: 
+    - echo "Развертывание проекта"

@@ -24,10 +24,9 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> with 
   @override
   void initState() {
     super.initState();
-    // Анимация волн: бесконечное повторение (0 → 1)
     _waveController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 8), // полный цикл одной волны
+      duration: const Duration(seconds: 8),
     )..repeat();
     _startPhase(BreathingPhase.inhale);
   }
@@ -90,63 +89,64 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> with 
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Виджет с анимацией волн
-              AnimatedBuilder(
-                animation: _waveController,
-                builder: (context, child) {
-                  return SizedBox(
-                    width: 250,
-                    height: 250,
-                    child: CustomPaint(
-                      painter: WavePainter(
-                        animationValue: _waveController.value,
-                        centerColor: AppColors.primaryBlue,
-                        waveColor: AppColors.primaryBlue.withOpacity(0.4),
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedBuilder(
+                  animation: _waveController,
+                  builder: (context, child) {
+                    return SizedBox(
+                      width: 250,
+                      height: 250,
+                      child: CustomPaint(
+                        painter: WavePainter(
+                          animationValue: _waveController.value,
+                          centerColor: AppColors.primaryBlue,
+                          waveColor: AppColors.primaryBlue.withOpacity(0.4),
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 40),
-              Text(
-                _getPhaseText(),
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryBlue,
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '$_secondsRemaining сек',
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: AppColors.primaryBlue,
+                const SizedBox(height: 40),
+                Text(
+                  _getPhaseText(),
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryBlue,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                _getInstructionText(),
-                style: const TextStyle(fontSize: 16, color: AppColors.primaryBlue),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              OutlinedButton(
-                onPressed: () {
-                  _timer?.cancel();
-                  _startPhase(BreathingPhase.inhale);
-                },
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primaryBlue,
-                  side: BorderSide(color: AppColors.primaryBlue),
+                const SizedBox(height: 8),
+                Text(
+                  '$_secondsRemaining сек',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: AppColors.primaryBlue,
+                  ),
                 ),
-                child: const Text('Начать заново'),
-              ),
-            ],
+                const SizedBox(height: 16),
+                Text(
+                  _getInstructionText(),
+                  style: const TextStyle(fontSize: 16, color: AppColors.primaryBlue),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                OutlinedButton(
+                  onPressed: () {
+                    _timer?.cancel();
+                    _startPhase(BreathingPhase.inhale);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primaryBlue,
+                    side: BorderSide(color: AppColors.primaryBlue),
+                  ),
+                  child: const Text('Начать заново'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -178,11 +178,8 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> with 
 
 enum BreathingPhase { inhale, hold, exhale }
 
-/// Кастомный рисовальщик волн.
-/// Принимает значение анимации от 0 до 1 и рисует несколько концентрических
-/// полупрозрачных кругов, радиус которых увеличивается, а прозрачность падает.
 class WavePainter extends CustomPainter {
-  final double animationValue; // от 0 до 1
+  final double animationValue;
   final Color centerColor;
   final Color waveColor;
 
@@ -195,19 +192,15 @@ class WavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final maxRadius = size.width / 2; // максимальный радиус – до края
+    final maxRadius = size.width / 2;
 
-    // Рисуем 3 волны с разной фазой
     const int waveCount = 3;
     for (int i = 0; i < waveCount; i++) {
-      // Фаза для каждой волны: смещение по времени
       double phase = (animationValue - i * 0.33) % 1.0;
       if (phase < 0) phase += 1.0;
 
-      // Радиус: от 20% до 95% от максимального
       double radius = 20.0 + (maxRadius - 20.0) * phase;
-      // Прозрачность: от полной до нуля
-      double opacity = (1.0 - phase).clamp(0.0, 1.0) * 0.6; // умножаем на 0.6, чтобы волны были не слишком яркими
+      double opacity = (1.0 - phase).clamp(0.0, 1.0) * 0.6;
 
       final paint = Paint()
         ..color = waveColor.withOpacity(opacity)
@@ -217,7 +210,6 @@ class WavePainter extends CustomPainter {
       canvas.drawCircle(center, radius, paint);
     }
 
-    // Рисуем центральный неподвижный круг
     final centerPaint = Paint()
       ..color = centerColor
       ..style = PaintingStyle.fill;

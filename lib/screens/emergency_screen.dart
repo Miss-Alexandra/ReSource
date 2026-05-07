@@ -22,57 +22,59 @@ class EmergencyScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            _buildOption(
-              context,
-              icon: Icons.air,
-              title: 'Дыхательное упражнение',
-              description: 'Техника 4-7-8 для успокоения',
-              onTap: () => Navigator.pushNamed(context, '/breathing'),
-            ),
-            const SizedBox(height: 16),
-            _buildOption(
-              context,
-              icon: Icons.touch_app,
-              title: 'Заземление 5-4-3-2-1',
-              description: 'Сосредоточьтесь на своих чувствах',
-              onTap: () => Navigator.pushNamed(context, '/grounding'),
-            ),
-            const SizedBox(height: 16),
-            _buildOption(
-              context,
-              icon: Icons.photo_library,
-              title: 'Фотографии-ресурсы',
-              description: 'Просмотрите установленные изображения',
-              onTap: () => _showPlaceholder(context, 'Фотографии-ресурсы'),
-            ),
-            const SizedBox(height: 16),
-            _buildOption(
-              context,
-              icon: Icons.audiotrack,
-              title: 'Успокаивающее аудио',
-              description: 'Слушайте установленные звуки',
-              onTap: () => _showPlaceholder(context, 'Успокаивающее аудио'),
-            ),
-            const SizedBox(height: 32),
-            const Divider(),
-            const SizedBox(height: 16),
-            _buildHotlineButton(
-              context,
-              title: 'Телефон доверия',
-              number: '8-800-2000-122',
-              onTap: () => _callNumber(context, '88002000122'),
-            ),
-            const SizedBox(height: 12),
-            _buildHotlineButton(
-              context,
-              title: 'Экстренные службы',
-              number: '112',
-              onTap: () => _callNumber(context, '112'),
-            ),
-          ],
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              _buildOption(
+                context,
+                icon: Icons.air,
+                title: 'Дыхательное упражнение',
+                description: 'Техника 4-7-8 для успокоения',
+                onTap: () => Navigator.pushNamed(context, '/breathing'),
+              ),
+              const SizedBox(height: 16),
+              _buildOption(
+                context,
+                icon: Icons.touch_app,
+                title: 'Заземление 5-4-3-2-1',
+                description: 'Сосредоточьтесь на своих чувствах',
+                onTap: () => Navigator.pushNamed(context, '/grounding'),
+              ),
+              const SizedBox(height: 16),
+              _buildOption(
+                context,
+                icon: Icons.photo_library,
+                title: 'Фотографии-ресурсы',
+                description: 'Просмотрите установленные изображения',
+                onTap: () => Navigator.pushNamed(context, '/photos'),
+              ),
+              const SizedBox(height: 16),
+              _buildOption(
+                context,
+                icon: Icons.audiotrack,
+                title: 'Успокаивающее аудио',
+                description: 'Слушайте установленные звуки',
+                onTap: () => Navigator.pushNamed(context, '/audio'),
+              ),
+              const SizedBox(height: 32),
+              const Divider(),
+              const SizedBox(height: 16),
+              _buildHotlineButton(
+                context,
+                title: 'Телефон доверия',
+                number: '8-800-2000-122',
+                onTap: () => _callNumber(context, '88002000122'),
+              ),
+              const SizedBox(height: 12),
+              _buildHotlineButton(
+                context,
+                title: 'Экстренные службы',
+                number: '112',
+                onTap: () => _callNumber(context, '112'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -110,19 +112,6 @@ class EmergencyScreen extends StatelessWidget {
         subtitle: Text(number, style: const TextStyle(color: AppColors.primaryBlue)),
         trailing: const Icon(Icons.call, color: AppColors.primaryBlue),
         onTap: onTap,
-      ),
-    );
-  }
-
-  void _showPlaceholder(BuildContext context, String title) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(title),
-        content: const Text('Функция в разработке'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-        ],
       ),
     );
   }
